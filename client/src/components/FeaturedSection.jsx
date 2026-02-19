@@ -1,62 +1,64 @@
-import React from 'react'
-import Title from './Title'
-import { assets } from '../assets/assets'
-import CarCard from './CarCard'
-import { useNavigate } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
-import { motion } from 'motion/react'
+import React from "react";
+import CarCard from "./CarCard";
+import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import { motion } from "framer-motion";
 
 const FeaturedSection = () => {
-
-    const navigate = useNavigate()
-    const {cars} = useAppContext()
+  const navigate = useNavigate();
+  const { cars } = useAppContext();
 
   return (
-    <motion.div 
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 1, ease: "easeOut" }}
-    className='flex flex-col items-center py-24 px-6 md:px-16 lg:px-24 xl:px-32'>
+    <section className="w-full">
 
-        <motion.div
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="max-w-7xl mx-auto text-center"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold">
+          Featured <span className="text-yellow-500">Vehicles</span>
+        </h2>
+
+        <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+          Discover our hand-picked premium cars designed to deliver
+          performance, comfort, and unforgettable driving experiences.
+        </p>
+      </motion.div>
+
+      {/* Cars Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mt-16"
+      >
+        {cars.slice(0, 6).map((car) => (
+          <CarCard key={car._id} car={car} />
+        ))}
+      </motion.div>
+
+      {/* Button */}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="flex justify-center mt-16"
+      >
+        <button
+          onClick={() => {
+            navigate("/cars");
+            scrollTo(0, 0);
+          }}
+          className="px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all"
         >
-            <Title title='Featured Vehicles' subTitle='Explore our selection of premium vehicles available for your next adventure.'/>
-        </motion.div>
+          Explore All Cars
+        </button>
+      </motion.div>
 
-        <motion.div 
-        initial={{ opacity: 0, y: 100 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 1 }}
-        className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-18'>
-        {
-            cars.slice(0,6).map((car)=> (
-                <motion.div key={car._id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, ease: "easeOut"  }}
-                >
-                    <CarCard car={car}/>
-                </motion.div>
-            ))
-        }
-        </motion.div>
+    </section>
+  );
+};
 
-        <motion.button 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.4 }}
-        onClick={()=> {
-            navigate('/cars'); scrollTo(0,0)
-        }}
-         className='flex items-center justify-center gap-2 px-6 py-2 border border-borderColor hover:bg-gray-50 rounded-md mt-18 cursor-pointer'>
-            Explore all cars <img src={assets.arrow_icon} alt="arrow" />
-        </motion.button>
-      
-    </motion.div>
-  )
-}
-
-export default FeaturedSection
+export default FeaturedSection;

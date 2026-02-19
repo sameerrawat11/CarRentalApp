@@ -1,104 +1,149 @@
-import React, { useEffect, useState } from 'react'
-import { assets} from '../assets/assets'
-import Title from '../components/Title'
-import { useAppContext } from '../context/AppContext'
-import toast from 'react-hot-toast'
-import { motion } from 'motion/react'
+import React, { useEffect, useState } from "react";
+import { assets } from "../assets/assets";
+import Title from "../components/Title";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
+import { motion } from "motion/react";
 
 const MyBookings = () => {
+  const { axios, user, currency } = useAppContext();
+  const [bookings, setBookings] = useState([]);
 
-  const { axios, user, currency } = useAppContext()
-
-  const [bookings, setBookings] = useState([])
-
-  const fetchMyBookings = async ()=>{
+  const fetchMyBookings = async () => {
     try {
-      const { data } = await axios.get('/api/bookings/user')
-      if (data.success){
-        setBookings(data.bookings)
-      }else{
-        toast.error(data.message)
+      const { data } = await axios.get("/api/bookings/user");
+      if (data.success) {
+        setBookings(data.bookings);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
-  useEffect(()=>{
-    user && fetchMyBookings()
-  },[user])
+  useEffect(() => {
+    user && fetchMyBookings();
+  }, [user]);
 
   return (
-    <motion.div 
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    
-    className='px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-sm max-w-7xl'>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 py-20">
 
-      <Title title='My Bookings'
-       subTitle='View and manage your all car bookings'
-       align="left"/>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Title
+          title="My Bookings"
+          subTitle="View and manage your car bookings"
+          align="left"
+        />
+      </motion.div>
 
-       <div>
-        {bookings.map((booking, index)=>(
-          <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1, duration: 0.4 }}
-          
-          key={booking._id} className='grid grid-cols-1 md:grid-cols-4 gap-6 p-6 border border-borderColor rounded-lg mt-5 first:mt-12'>
-            {/* Car Image + Info */}
+      <div className="mt-12 space-y-10">
+        {bookings.map((booking, index) => (
+          <motion.div
+            key={booking._id}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="backdrop-blur-lg bg-white/5 border border-gray-700 
+                       rounded-2xl p-8 shadow-xl 
+                       hover:shadow-yellow-500/10 transition-all duration-500"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 
-            <div className='md:col-span-1'>
-              <div className='rounded-md overflow-hidden mb-3'>
-                <img src={booking.car.image} alt="" className='w-full h-auto aspect-video object-cover'/>
+              {/* Car Info */}
+              <div>
+                <div className="rounded-xl overflow-hidden mb-4">
+                  <img
+                    src={booking.car.image}
+                    alt=""
+                    className="w-full h-40 object-cover"
+                  />
+                </div>
+
+                <p className="text-xl font-semibold">
+                  {booking.car.brand} {booking.car.model}
+                </p>
+
+                <p className="text-gray-400 mt-1">
+                  {booking.car.year} • {booking.car.category} •{" "}
+                  {booking.car.location}
+                </p>
               </div>
-              <p className='text-lg font-medium mt-2'>{booking.car.brand} {booking.car.model}</p>
 
-              <p className='text-gray-500'>{booking.car.year} • {booking.car.category} • {booking.car.location}</p>
-            </div>
+              {/* Booking Details */}
+              <div className="md:col-span-2 space-y-5">
 
-            {/* Booking Info */}
-            <div className='md:col-span-2'>
-              <div className='flex items-center gap-2'>
-                <p className='px-3 py-1.5 bg-light rounded'>Booking #{index+1}</p>
-                <p className={`px-3 py-1 text-xs rounded-full ${booking.status === 'confirmed' ? 'bg-green-400/15 text-green-600' : 'bg-red-400/15 text-red-600'}`}>{booking.status}</p>
-              </div>
+                <div className="flex items-center gap-3">
+                  <p className="px-4 py-1.5 bg-white/10 rounded-full text-sm">
+                    Booking #{index + 1}
+                  </p>
 
-              <div className='flex items-start gap-2 mt-3'>
-                <img src={assets.calendar_icon_colored} alt="" className='w-4 h-4 mt-1'/>
-                <div>
-                  <p className='text-gray-500'>Rental Period</p>
-                  <p>{booking.pickupDate.split('T')[0]} To {booking.returnDate.split('T')[0]}</p>
+                  <p
+                    className={`px-4 py-1 text-xs rounded-full font-medium ${
+                      booking.status === "confirmed"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-yellow-500/20 text-yellow-400"
+                    }`}
+                  >
+                    {booking.status}
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <img
+                    src={assets.calendar_icon_colored}
+                    alt=""
+                    className="w-4 h-4 mt-1"
+                  />
+                  <div>
+                    <p className="text-gray-400">Rental Period</p>
+                    <p className="text-white">
+                      {booking.pickupDate.split("T")[0]} →{" "}
+                      {booking.returnDate.split("T")[0]}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <img
+                    src={assets.location_icon_colored}
+                    alt=""
+                    className="w-4 h-4 mt-1"
+                  />
+                  <div>
+                    <p className="text-gray-400">Pick-up Location</p>
+                    <p className="text-white">
+                      {booking.car.location}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className='flex items-start gap-2 mt-3'>
-                <img src={assets.location_icon_colored} alt="" className='w-4 h-4 mt-1'/>
+              {/* Price Section */}
+              <div className="flex flex-col justify-between text-right">
                 <div>
-                  <p className='text-gray-500'>Pick-up Location</p>
-                  <p>{booking.car.location}</p>
+                  <p className="text-gray-400">Total Price</p>
+                  <h1 className="text-3xl font-bold text-yellow-500 mt-1">
+                    {currency}
+                    {booking.price}
+                  </h1>
                 </div>
+
+                <p className="text-gray-500 text-sm mt-6">
+                  Booked on {booking.createdAt.split("T")[0]}
+                </p>
               </div>
+
             </div>
-
-           {/* Price */}
-           <div className='md:col-span-1 flex flex-col justify-between gap-6'>
-              <div className='text-sm text-gray-500 text-right'>
-                <p>Total Price</p>
-                <h1 className='text-2xl font-semibold text-primary'>{currency}{booking.price}</h1>
-                <p>Booked on {booking.createdAt.split('T')[0]}</p>
-              </div>
-           </div>
-
-
           </motion.div>
         ))}
-       </div>
-      
-    </motion.div>
-  )
-}
+      </div>
+    </div>
+  );
+};
 
-export default MyBookings
+export default MyBookings;

@@ -41,7 +41,48 @@ import car_image2 from "./car_image2.png"
 import car_image3 from "./car_image3.png"
 import car_image4 from "./car_image4.png"
 
-export const cityList = ['New York', 'Los Angeles', 'Houston', 'Chicago']
+export const stateCityData = {
+
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Tirupati"],
+  "Arunachal Pradesh": ["Itanagar", "Tawang", "Ziro"],
+  "Assam": ["Guwahati", "Dibrugarh", "Silchar"],
+  "Bihar": ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur"],
+  "Chhattisgarh": ["Raipur", "Bilaspur", "Durg"],
+  "Goa": ["Panaji", "Margao", "Vasco da Gama"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot"],
+  "Haryana": ["Gurgaon", "Faridabad", "Panipat"],
+  "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
+  "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad"],
+  "Karnataka": ["Bangalore", "Mysore", "Mangalore", "Hubli"],
+  "Kerala": ["Kochi", "Trivandrum", "Kozhikode"],
+  "Madhya Pradesh": ["Bhopal", "Indore", "Gwalior", "Jabalpur"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik"],
+  "Manipur": ["Imphal"],
+  "Meghalaya": ["Shillong"],
+  "Mizoram": ["Aizawl"],
+  "Nagaland": ["Kohima", "Dimapur"],
+  "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela"],
+  "Punjab": ["Chandigarh", "Ludhiana", "Amritsar"],
+  "Rajasthan": ["Jaipur", "Udaipur", "Jodhpur", "Kota"],
+  "Sikkim": ["Gangtok"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem"],
+  "Telangana": ["Hyderabad", "Warangal"],
+  "Tripura": ["Agartala"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi", "Noida", "Agra"],
+  "Uttarakhand": ["Dehradun", "Haridwar"],
+  "West Bengal": ["Kolkata", "Siliguri", "Durgapur"],
+
+  // Union Territories
+  "Andaman and Nicobar Islands": ["Port Blair"],
+  "Chandigarh": ["Chandigarh"],
+  "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Diu"],
+  "Delhi": ["New Delhi"],
+  "Jammu and Kashmir": ["Srinagar", "Jammu"],
+  "Ladakh": ["Leh"],
+  "Lakshadweep": ["Kavaratti"],
+  "Puducherry": ["Puducherry"]
+
+};
 
 export const assets = {
     logo,

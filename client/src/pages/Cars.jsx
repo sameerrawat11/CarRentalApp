@@ -1,110 +1,125 @@
-import React, { useEffect, useState } from 'react'
-import Title from '../components/Title'
-import { assets, dummyCarData } from '../assets/assets'
-import CarCard from '../components/CarCard'
-import { useSearchParams } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
-import toast from 'react-hot-toast'
-import { motion } from 'motion/react'
+import React, { useEffect, useState } from "react";
+import Title from "../components/Title";
+import CarCard from "../components/CarCard";
+import { useSearchParams } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const Cars = () => {
+  const [searchParams] = useSearchParams();
+  const pickupLocation = searchParams.get("pickupLocation");
+  const pickupDate = searchParams.get("pickupDate");
+  const returnDate = searchParams.get("returnDate");
 
-  // getting search params from url
-  const [searchParams] = useSearchParams()
-  const pickupLocation = searchParams.get('pickupLocation')
-  const pickupDate = searchParams.get('pickupDate')
-  const returnDate = searchParams.get('returnDate')
+  const { cars, axios } = useAppContext();
+  const [input, setInput] = useState("");
+  const [filteredCars, setFilteredCars] = useState([]);
 
-  const {cars, axios} = useAppContext()
+  const isSearchData = pickupLocation && pickupDate && returnDate;
 
-  const [input, setInput] = useState('')
-
-  const isSearchData = pickupLocation && pickupDate && returnDate
-  const [filteredCars, setFilteredCars] = useState([])
-
-  const applyFilter = async ()=>{
-     
-    if(input === ''){
-      setFilteredCars(cars)
-      return null
+  const applyFilter = () => {
+    if (input === "") {
+      setFilteredCars(cars);
+      return;
     }
 
-    const filtered = cars.slice().filter((car)=>{
-      return car.brand.toLowerCase().includes(input.toLowerCase())
-      || car.model.toLowerCase().includes(input.toLowerCase())  
-      || car.category.toLowerCase().includes(input.toLowerCase())  
-      || car.transmission.toLowerCase().includes(input.toLowerCase())
-    })
-    setFilteredCars(filtered)
-  }
+    const filtered = cars.filter((car) =>
+      car.brand.toLowerCase().includes(input.toLowerCase()) ||
+      car.model.toLowerCase().includes(input.toLowerCase()) ||
+      car.category.toLowerCase().includes(input.toLowerCase()) ||
+      car.transmission.toLowerCase().includes(input.toLowerCase())
+    );
 
-  const searchCarAvailablity = async () =>{
-    const {data} = await axios.post('/api/bookings/check-availability', {location: pickupLocation, pickupDate, returnDate})
+    setFilteredCars(filtered);
+  };
+
+  const searchCarAvailability = async () => {
+    const { data } = await axios.post(
+      "/api/bookings/check-availability",
+      { location: pickupLocation, pickupDate, returnDate }
+    );
+
     if (data.success) {
-      setFilteredCars(data.availableCars)
-      if(data.availableCars.length === 0){
-        toast('No cars available')
+      setFilteredCars(data.availableCars);
+      if (data.availableCars.length === 0) {
+        toast("No cars available");
       }
-      return null
     }
-  }
+  };
 
-  useEffect(()=>{
-    isSearchData && searchCarAvailablity()
-  },[])
+  useEffect(() => {
+    if (isSearchData) searchCarAvailability();
+  }, []);
 
-  useEffect(()=>{
-    cars.length > 0 && !isSearchData && applyFilter()
-  },[input, cars])
+  useEffect(() => {
+    if (!isSearchData) applyFilter();
+  }, [input, cars]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
 
-      <motion.div 
+      {/* Hero Section */}
+      <div className="flex flex-col items-center py-24 px-6 text-center">
+
+        <motion.h1
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl md:text-6xl font-bold"
+        >
+          Available <span className="text-yellow-500">Cars</span>
+        </motion.h1>
+
+        <p className="text-gray-400 mt-4 max-w-2xl">
+          Browse our selection of premium vehicles available for your next adventure.
+        </p>
+
+        {/* Search Bar */}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ delay: 0.3 }}
+          className="mt-10 w-full max-w-3xl"
+        >
+          <div className="flex items-center bg-white/10 backdrop-blur-lg border border-gray-700 px-6 h-14 rounded-full shadow-xl">
 
-      className='flex flex-col items-center py-20 bg-light max-md:px-4'>
-        <Title title='Available Cars' subTitle='Browse our selection of premium vehicles available for your next adventure'/>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              type="text"
+              placeholder="Search by make, model, or features"
+              className="w-full bg-transparent outline-none text-gray-300 placeholder-gray-500"
+            />
 
-        <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-
-        className='flex items-center bg-white px-4 mt-6 max-w-140 w-full h-12 rounded-full shadow'>
-          <img src={assets.search_icon} alt="" className='w-4.5 h-4.5 mr-2'/>
-
-          <input onChange={(e)=> setInput(e.target.value)} value={input} type="text" placeholder='Search by make, model, or features' className='w-full h-full outline-none text-gray-500'/>
-
-          <img src={assets.filter_icon} alt="" className='w-4.5 h-4.5 ml-2'/>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
+      {/* Cars Grid */}
+      <div className="px-6 md:px-16 lg:px-24 pb-20">
 
-      className='px-6 md:px-16 lg:px-24 xl:px-32 mt-10'>
-        <p className='text-gray-500 xl:px-20 max-w-7xl mx-auto'>Showing {filteredCars.length} Cars</p>
+        <p className="text-gray-400 mb-6">
+          Showing {filteredCars.length} Cars
+        </p>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto'>
-          {filteredCars.map((car, index)=> (
-            <motion.div key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * index, duration: 0.4 }}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+          {filteredCars.map((car, index) => (
+            <motion.div
+              key={car._id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
             >
-              <CarCard car={car}/>
+              <CarCard car={car} />
             </motion.div>
           ))}
+
         </div>
-      </motion.div>
-
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Cars
+export default Cars;

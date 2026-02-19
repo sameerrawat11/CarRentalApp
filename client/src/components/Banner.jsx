@@ -1,34 +1,55 @@
-import React from 'react'
-import { assets } from '../assets/assets'
-import { motion } from 'motion/react'
+import React from "react";
+import { assets } from "../assets/assets";
+import { motion } from "framer-motion";
 
 const Banner = () => {
   return (
-    <motion.div 
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    className='flex flex-col md:flex-row md:items-start items-center justify-between px-8 min-md:pl-14 pt-10 bg-gradient-to-r from-[#0558FE] to-[#A9CFFF] max-w-6xl mx-3 md:mx-auto rounded-2xl overflow-hidden'>
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+      className="max-w-7xl mx-auto rounded-3xl overflow-hidden 
+      bg-gradient-to-r from-[#111] via-[#1a1a1a] to-[#111] 
+      border border-gray-800 px-8 md:px-14 py-16 
+      flex flex-col md:flex-row items-center justify-between gap-10"
+    >
+      {/* Left Content */}
+      <div className="text-white max-w-xl">
+        <h2 className="text-3xl md:text-4xl font-bold leading-snug">
+          Own a Premium Car?
+        </h2>
 
-        <div className='text-white'>
-            <h2 className='text-3xl font-medium'>Do You Own a Luxury Car?</h2>
-            <p className='mt-2'>Monetize your vehicle effortlessly by listing it on CarRental.</p>
-            <p className='max-w-130'>We take care of insurance, driver verification and secure payments — so you can earn passive income, stress-free.</p>
+        <p className="mt-4 text-gray-400">
+          Partner with <span className="text-yellow-500 font-semibold">Veloraw</span> 
+          and turn your luxury vehicle into a steady income stream.
+        </p>
 
-            <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className='px-6 py-2 bg-white hover:bg-slate-100 transition-all text-primary rounded-lg text-sm mt-4 cursor-pointer'>List your car</motion.button>
-        </div>
+        <p className="mt-2 text-gray-500">
+          We handle bookings, verification, secure payments, and customer support —
+          so you earn effortlessly while we manage everything.
+        </p>
 
-        <motion.img 
-        initial={{ opacity: 0, x: 50 }}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="mt-6 px-8 py-3 bg-yellow-500 hover:bg-yellow-600 
+          text-black font-semibold rounded-lg transition-all"
+        >
+          List Your Car
+        </motion.button>
+      </div>
+
+      {/* Right Image */}
+      <motion.img
+        initial={{ opacity: 0, x: 80 }}
         whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        src={assets.banner_car_image} alt="car" className='max-h-45 mt-10'/>
-      
+        transition={{ duration: 0.7, delay: 0.3 }}
+        src={assets.banner_car_image}
+        alt="Luxury Car"
+        className="max-h-64 object-contain"
+      />
     </motion.div>
-  )
-}
+  );
+};
 
-export default Banner
+export default Banner;

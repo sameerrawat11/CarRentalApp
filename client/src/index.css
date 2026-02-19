@@ -12,3 +12,9 @@
   --color-light: #F1F5F9;
   --color-borderColor: #c4c7d2;
 }
+/* Make date icon white in dark mode */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.9;
+  cursor: pointer;
+}

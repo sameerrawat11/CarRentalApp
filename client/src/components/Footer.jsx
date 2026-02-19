@@ -1,118 +1,80 @@
 import React from "react";
 import { assets } from "../assets/assets";
-import { motion } from "motion/react";
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay },
-});
+import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
-    <footer className="px-6 md:px-16 lg:px-24 xl:px-32 mt-48 text-sm text-gray-500">
-      <motion.div
-        {...fadeUp(0)}
-        className="flex flex-wrap justify-between items-start gap-10 pb-10 border-b border-borderColor"
-      >
-        <div className="max-w-sm">
-          <motion.img
-            {...fadeUp(0.2)}
-            src={assets.logo}
-            alt="logo"
-            className="h-9 mb-3"
-          />
+    <footer className="bg-black text-gray-400 mt-40 border-t border-gray-800">
 
-          <motion.p {...fadeUp(0.3)} className="leading-relaxed">
-            Premium car rental service with a wide selection of luxury and
-            everyday vehicles for all your driving needs.
-          </motion.p>
+      <div className="max-w-7xl mx-auto px-6 md:px-16 py-20 grid grid-cols-1 md:grid-cols-4 gap-12">
 
-          <motion.div
-            {...fadeUp(0.4)}
-            className="flex items-center gap-4 mt-6"
-          >
-            {[assets.facebook_logo, assets.instagram_logo, assets.twitter_logo, assets.gmail_logo].map(
+        {/* Brand Section */}
+        <div>
+          <h2 className="text-2xl font-bold text-white">
+            <span className="text-yellow-500">Velo</span>raw
+          </h2>
+
+          <p className="mt-4 text-sm leading-relaxed">
+            Veloraw is a premium car rental platform delivering
+            luxury, performance, and seamless booking experiences
+            across India.
+          </p>
+
+          <div className="flex gap-4 mt-6">
+            {[assets.facebook_logo, assets.instagram_logo, assets.twitter_logo].map(
               (logo, i) => (
                 <a key={i} href="#">
-                  <img src={logo} className="w-5 h-5 hover:opacity-70 transition" />
+                  <img
+                    src={logo}
+                    alt="social"
+                    className="w-5 h-5 opacity-70 hover:opacity-100 transition"
+                  />
                 </a>
               )
             )}
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          {...fadeUp(0.3)}
-          className="flex flex-wrap justify-between w-full md:w-1/2 gap-10"
-        >
-          <div>
-            <h2 className="text-base font-medium text-gray-900 uppercase tracking-wide">
-              Quick Links
-            </h2>
-            <ul className="mt-4 flex flex-col gap-2">
-              {["Home", "Browse Cars", "List Your Car", "About Us"].map(
-                (item) => (
-                  <li key={item}>
-                    <a className="hover:text-gray-700 transition" href="#">
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+        {/* Quick Links */}
+        <div>
+          <h3 className="text-white font-semibold mb-4">Quick Links</h3>
+          <ul className="space-y-3 text-sm">
+            <li><a href="/" className="hover:text-yellow-500 transition">Home</a></li>
+            <li><a href="/cars" className="hover:text-yellow-500 transition">Browse Cars</a></li>
+            <li><a href="#" className="hover:text-yellow-500 transition">List Your Car</a></li>
+            <li><a href="#" className="hover:text-yellow-500 transition">About Us</a></li>
+          </ul>
+        </div>
 
-          <div>
-            <h2 className="text-base font-medium text-gray-900 uppercase tracking-wide">
-              Resources
-            </h2>
-            <ul className="mt-4 flex flex-col gap-2">
-              {["Help Center", "Terms of Service", "Privacy Policy", "Insurance"].map(
-                (item) => (
-                  <li key={item}>
-                    <a className="hover:text-gray-700 transition" href="#">
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+        {/* Resources */}
+        <div>
+          <h3 className="text-white font-semibold mb-4">Resources</h3>
+          <ul className="space-y-3 text-sm">
+            <li><a href="#" className="hover:text-yellow-500 transition">Help Center</a></li>
+            <li><a href="#" className="hover:text-yellow-500 transition">Terms of Service</a></li>
+            <li><a href="#" className="hover:text-yellow-500 transition">Privacy Policy</a></li>
+            <li><a href="#" className="hover:text-yellow-500 transition">Insurance</a></li>
+          </ul>
+        </div>
 
-          <div>
-            <h2 className="text-base font-medium text-gray-900 uppercase tracking-wide">
-              Contact
-            </h2>
-            <ul className="mt-4 flex flex-col gap-2">
-              <li>1234 Luxury Drive</li>
-              <li>San Francisco, CA 94107</li>
-              <li>+1 234 567890</li>
-              <li>info@example.com</li>
-            </ul>
-          </div>
-        </motion.div>
-      </motion.div>
+        {/* Contact */}
+        <div>
+          <h3 className="text-white font-semibold mb-4">Contact</h3>
+          <ul className="space-y-3 text-sm">
+            <li>Veloraw HQ</li>
+            <li>New Delhi, India</li>
+            <li>+91 98765 43210</li>
+            <li>support@veloraw.com</li>
+          </ul>
+        </div>
 
-      <motion.div
-        {...fadeUp(0.5)}
-        className="flex flex-col md:flex-row gap-3 items-center justify-between py-6 text-gray-600"
-      >
-        <p>© {new Date().getFullYear()} Brand. All rights reserved.</p>
+      </div>
 
-        <ul className="flex items-center gap-4">
-          {["Privacy", "Terms", "Cookies"].map((item, i) => (
-            <React.Fragment key={item}>
-              <li>
-                <a className="hover:text-gray-800 transition" href="#">
-                  {item}
-                </a>
-              </li>
-              {i < 2 && <span>|</span>}
-            </React.Fragment>
-          ))}
-        </ul>
-      </motion.div>
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-800 py-6 text-center text-sm text-gray-500">
+        © {new Date().getFullYear()} Veloraw. All rights reserved.
+      </div>
+
     </footer>
   );
 };

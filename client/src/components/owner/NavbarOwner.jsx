@@ -1,20 +1,31 @@
-import React from 'react'
-import { assets } from '../../assets/assets'
-import { Link } from 'react-router-dom';
-import { useAppContext } from '../../context/AppContext';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
 
 const NavbarOwner = () => {
-
-    const {user} = useAppContext()
+  const { user } = useAppContext();
 
   return (
-    <div className='flex items-center justify-between px-6 md:px-10 py-4 text-gray-500 border-b border-borderColor relative transition-all'>
-      <Link to='/'>
-        <img src={assets.logo} alt="" className="h-7"/>
-      </Link>
-      <p>Welcome, {user?.name || "Owner"}</p>
-    </div>
-  )
-}
+    <div className="flex items-center justify-between 
+    px-8 md:px-12 py-5 
+    bg-gradient-to-r from-black via-gray-900 to-black 
+    border-b border-gray-800 text-white">
 
-export default NavbarOwner
+      {/* Logo */}
+      <Link to="/" className="text-2xl font-bold tracking-wide">
+        <span className="text-yellow-500">Velo</span>RAW
+      </Link>
+
+      {/* Welcome Text */}
+      <p className="text-gray-400">
+        Welcome,{" "}
+        <span className="text-yellow-500 font-semibold">
+          {user?.name || "Owner"}
+        </span>
+      </p>
+
+    </div>
+  );
+};
+
+export default NavbarOwner;

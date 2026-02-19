@@ -1,7 +1,6 @@
 import React from "react";
-import Title from "./Title";
 import { assets } from "../assets/assets";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 
 const Testimonial = () => {
   const testimonials = [
@@ -21,19 +20,26 @@ const Testimonial = () => {
       name: "Rohit Verma",
       location: "Delhi, India",
       testimonial:
-        "Reliable, affordable, and premium quality service. I recommend them to everyone looking for car rentals.",
+        "Reliable, affordable, and premium quality service. I recommend Veloraw to everyone looking for car rentals.",
     },
   ];
 
   return (
-    <div className="py-28 px-6 md:px-16 lg:px-24 xl:px-44">
+    <section className="max-w-7xl mx-auto">
 
-      <Title
-        title="What Our Customers Say"
-        subTitle="See why travelers across India trust us for a premium and reliable travel experience."
-      />
+      {/* Section Heading */}
+      <div className="text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold text-white">
+          What Our <span className="text-yellow-500">Customers Say</span>
+        </h2>
+        <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+          Trusted by travelers across India for premium vehicles,
+          seamless bookings, and world-class service.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-18">
+      {/* Testimonials Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {testimonials.map((item, index) => (
           <motion.div
             key={index}
@@ -44,38 +50,52 @@ const Testimonial = () => {
               delay: index * 0.2,
               ease: "easeOut",
             }}
-            viewport={{ once: true, amount: 0.3 }}
-            className="bg-white p-6 rounded-xl shadow-lg hover:-translate-y-1 transition-all duration-500"
+            viewport={{ once: true }}
+            className="bg-[#111] border border-gray-800 
+            rounded-2xl p-8 hover:-translate-y-2 
+            hover:shadow-yellow-500/10 hover:shadow-2xl 
+            transition-all duration-500"
           >
-            {/* Avatar */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center">
-                <span className="text-white text-lg font-semibold">
-                  {item.name.charAt(0)}
-                </span>
+            {/* Avatar + Name */}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full 
+              bg-yellow-500 text-black flex items-center justify-center font-bold">
+                {item.name.charAt(0)}
               </div>
 
               <div>
-                <p className="text-xl">{item.name}</p>
-                <p className="text-gray-500">{item.location}</p>
+                <p className="text-lg font-semibold text-white">
+                  {item.name}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {item.location}
+                </p>
               </div>
             </div>
 
+            {/* Stars */}
             <div className="flex items-center gap-1 mt-4">
               {Array(5)
                 .fill(0)
                 .map((_, i) => (
-                  <img key={i} src={assets.star_icon} alt="star-icon" />
+                  <img
+                    key={i}
+                    src={assets.star_icon}
+                    alt="star"
+                    className="w-4 h-4"
+                  />
                 ))}
             </div>
 
-            <p className="text-gray-500 max-w-90 mt-4 font-light">
+            {/* Testimonial Text */}
+            <p className="text-gray-400 mt-6 leading-relaxed">
               "{item.testimonial}"
             </p>
           </motion.div>
         ))}
       </div>
-    </div>
+
+    </section>
   );
 };
 
