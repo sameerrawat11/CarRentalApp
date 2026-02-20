@@ -45,7 +45,7 @@ const Navbar = () => {
       <div
         className={`max-sm:fixed max-sm:h-screen max-sm:w-full max-sm:top-16 right-0 
         flex flex-col sm:flex-row items-start sm:items-center gap-6 
-        max-sm:p-6 transition-all duration-300 z-50 bg-black 
+        max-sm:p-6 transition-all duration-300 z-40 bg-black 
         ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}
       >
         {menuLinks.map((link, index) => (
@@ -69,13 +69,18 @@ const Navbar = () => {
           </button>
 
           <button
-            onClick={() => {
-              user ? logout() : setShowLogin(true);
-            }}
-            className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all"
-          >
-            {user ? "Logout" : "Login"}
-          </button>
+  onClick={() => {
+    if (user) {
+      logout();
+    } else {
+      setOpen(false);      // 🔥 CLOSE MOBILE MENU
+      setShowLogin(true);  // 🔥 OPEN LOGIN MODAL
+    }
+  }}
+  className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all"
+>
+  {user ? "Logout" : "Login"}
+</button>
         </div>
       </div>
 

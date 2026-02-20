@@ -42,7 +42,7 @@ const MyBookings = () => {
         order_id: data.id,
         handler: async function (response) {
           toast.success("Payment Successful!");
-          fetchMyBookings(); // refresh bookings
+          await fetchMyBookings(); // refresh bookings
         },
         theme: {
           color: "#facc15",
@@ -99,18 +99,22 @@ const MyBookings = () => {
                   {booking.pickupDate.split("T")[0]} →{" "}
                   {booking.returnDate.split("T")[0]}
                 </p>
-                <p
-                  className={`px-3 py-1 text-xs rounded-full inline-block ${
-                    booking.status === "confirmed"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-yellow-500/20 text-yellow-400"
-                  }`}
-                >
-                  {booking.status}
-                </p>
+
+                {/* ✅ Status Badge */}
+                {booking.status === "paid" && (
+                  <span className="bg-green-600 text-white px-4 py-2 rounded">
+                    Paid
+                  </span>
+                )}
+
+                {booking.status === "pending" && (
+                  <span className="bg-yellow-600 text-white px-4 py-2 rounded">
+                    Pending
+                  </span>
+                )}
               </div>
 
-              {/* Price & Pay */}
+              {/* Price & Payment */}
               <div className="flex flex-col justify-between text-right">
                 <div>
                   <p className="text-gray-400">Total Price</p>
@@ -119,8 +123,8 @@ const MyBookings = () => {
                   </h1>
                 </div>
 
-                {/* 🔥 Show Pay Now if not confirmed */}
-                {booking.status !== "confirmed" && (
+                {/* ✅ Show Pay Now ONLY if Pending */}
+                {booking.status === "pending" && (
                   <button
                     onClick={() => handlePayment(booking)}
                     className="mt-4 bg-yellow-500 hover:bg-yellow-600 
@@ -129,6 +133,14 @@ const MyBookings = () => {
                     Pay Now
                   </button>
                 )}
+
+                {/* ✅ Show Paid Badge if Paid */}
+                {booking.status === "paid" && (
+                  <span className="bg-green-500 text-white text-sm py-1 px-3 rounded-full">
+                    Paid
+                  </span>
+                )}
+
               </div>
 
             </div>
