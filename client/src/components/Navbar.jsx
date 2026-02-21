@@ -49,20 +49,22 @@ const Navbar = () => {
         ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}
       >
         {menuLinks.map((link, index) => (
-          <Link
-            key={index}
-            to={link.path}
-            className="hover:text-yellow-500 transition duration-300"
-          >
-            {link.name}
-          </Link>
-        ))}
+  <Link
+    key={index}
+    to={link.path}
+    onClick={() => setOpen(false)}   // 🔥 CLOSE MENU
+    className="hover:text-yellow-500 transition duration-300"
+  >
+    {link.name}
+  </Link>
+))}
 
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
           <button
-            onClick={() =>
-              isOwner ? navigate("/owner") : changeRole()
-            }
+             onClick={() => {
+    setOpen(false);
+    isOwner ? navigate("/owner") : changeRole();
+  }}
             className="hover:text-yellow-500 transition"
           >
             {isOwner ? "Dashboard" : "List Cars"}

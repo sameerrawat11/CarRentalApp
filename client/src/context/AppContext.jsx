@@ -4,9 +4,6 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-console.log("Base URL:", import.meta.env.VITE_BASE_URL);
-
-// 🔥 Prevent cache issues
 axios.defaults.headers.common["Cache-Control"] = "no-cache";
 
 export const AppContext = createContext();
@@ -23,67 +20,63 @@ export const AppProvider = ({ children }) => {
   const [returnDate, setReturnDate] = useState("");
   const [cars, setCars] = useState([]);
 
-  // ✅ 🔥 PHONE FIX — Restore Token On App Load
+  // 🔥 Restore token on reload
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-
     if (storedToken) {
       setTokenState(storedToken);
       axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
     }
   }, []);
 
-  // ✅ Save Token Properly
   const setToken = (newToken) => {
     localStorage.setItem("token", newToken);
     setTokenState(newToken);
     axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
   };
 
-  // ✅ Fetch Logged-in User
+  // ✅ Fetch User
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/user/data", {
-        headers: { "Cache-Control": "no-cache" },
-      });
-
+      const { data } = await axios.get("/api/user/data");
       if (data.success) {
         setUser(data.user);
         setIsOwner(data.user.role === "owner");
       }
     } catch (error) {
-      console.log("User fetch failed:", error.response?.data || error.message);
       setUser(null);
       setIsOwner(false);
     }
   };
 
-  // ✅ Fetch Cars
+  // ✅ 🔥 IMPROVED FETCH CARS
   const fetchCars = async () => {
     try {
-      const { data } = await axios.get("/api/user/cars");
+      const { data } = await axios.get("/api/user/cars", {
+        headers: { "Cache-Control": "no-cache" },
+      });
+
       if (data.success) {
         setCars(data.cars);
       }
     } catch (error) {
+      console.log("Car fetch error:", error.response?.data || error.message);
       toast.error("Failed to load cars");
     }
   };
 
-  // ✅ When Token Changes → Set Header + Fetch User
+  // When token changes → fetch user
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       fetchUser();
     }
   }, [token]);
 
-  // ✅ Fetch Cars On App Load
+  // 🔥 Auto refresh cars when token available
   useEffect(() => {
     fetchCars();
-  }, []);
+  }, [token]); // important change
 
-  // ✅ Logout
   const logout = () => {
     localStorage.removeItem("token");
     setTokenState(null);

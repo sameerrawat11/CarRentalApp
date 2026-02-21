@@ -6,27 +6,25 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { stateCityData } from "../../assets/assets";
 
-
 const AddCar = () => {
-  const { axios, currency } = useAppContext();
+  const { axios, currency, fetchCars } = useAppContext(); // ✅ fetchCars added
 
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [car, setCar] = useState({
-  brand: "",
-  model: "",
-  year: "",
-  pricePerDay: "",
-  category: "",
-  transmission: "",
-  fuel_type: "",
-  seating_capacity: "",
-  state: "",          // ✅ ADD THIS
-  location: "",       // city
-  description: "",
-});
-
+    brand: "",
+    model: "",
+    year: "",
+    pricePerDay: "",
+    category: "",
+    transmission: "",
+    fuel_type: "",
+    seating_capacity: "",
+    state: "",
+    location: "",
+    description: "",
+  });
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -42,6 +40,9 @@ const AddCar = () => {
 
       if (data.success) {
         toast.success(data.message);
+
+        await fetchCars(); // 🔥 IMPORTANT REFRESH
+
         setImage(null);
         setCar({
           brand: "",
@@ -52,6 +53,7 @@ const AddCar = () => {
           transmission: "",
           fuel_type: "",
           seating_capacity: "",
+          state: "",        // ✅ reset added
           location: "",
           description: "",
         });
@@ -67,7 +69,6 @@ const AddCar = () => {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 md:px-12 lg:px-20 py-14">
-
       <div className="w-full xl:max-w-7xl mx-auto">
 
         <Title
@@ -80,8 +81,7 @@ const AddCar = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           onSubmit={onSubmitHandler}
-          className="mt-12 w-full backdrop-blur-xl bg-white/5 border border-gray-800 
-          rounded-3xl p-12 shadow-2xl space-y-10"
+          className="mt-12 w-full backdrop-blur-xl bg-white/5 border border-gray-800 rounded-3xl p-12 shadow-2xl space-y-10"
         >
 
           {/* Image Upload */}
@@ -146,63 +146,53 @@ const AddCar = () => {
             <Input type="number" label="Seating Capacity" value={car.seating_capacity} onChange={(v)=>setCar({...car, seating_capacity:v})}/>
           </div>
 
-        {/* State + City */}
-<div className="grid md:grid-cols-2 gap-6">
+          {/* State + City */}
+          <div className="grid md:grid-cols-2 gap-6">
 
-  {/* STATE SELECT */}
-  <div>
-    <label className="text-gray-400 text-sm">State</label>
-    <select
-      required
-      value={car.state}
-      onChange={(e) =>
-        setCar({
-          ...car,
-          state: e.target.value,
-          location: "", // reset city when state changes
-        })
-      }
-      className="w-full mt-2 px-4 py-3 bg-black border border-gray-700 
-      rounded-xl outline-none focus:border-yellow-500 transition text-white"
-    >
-      <option value="">Select State</option>
-      {Object.keys(stateCityData).map((state) => (
-        <option key={state} value={state}>
-          {state}
-        </option>
-      ))}
-    </select>
-  </div>
+            <div>
+              <label className="text-gray-400 text-sm">State</label>
+              <select
+                required
+                value={car.state}
+                onChange={(e) =>
+                  setCar({
+                    ...car,
+                    state: e.target.value,
+                    location: "",
+                  })
+                }
+                className="w-full mt-2 px-4 py-3 bg-black border border-gray-700 rounded-xl outline-none focus:border-yellow-500 transition text-white"
+              >
+                <option value="">Select State</option>
+                {Object.keys(stateCityData).map((state) => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+            </div>
 
-  {/* CITY SELECT */}
-  <div>
-    <label className="text-gray-400 text-sm">City</label>
-    <select
-      required
-      value={car.location}
-      disabled={!car.state}
-      onChange={(e) =>
-        setCar({
-          ...car,
-          location: e.target.value,
-        })
-      }
-      className="w-full mt-2 px-4 py-3 bg-black border border-gray-700 
-      rounded-xl outline-none focus:border-yellow-500 transition text-white 
-      disabled:opacity-50"
-    >
-      <option value="">Select City</option>
+            <div>
+              <label className="text-gray-400 text-sm">City</label>
+              <select
+                required
+                value={car.location}
+                disabled={!car.state}
+                onChange={(e) =>
+                  setCar({
+                    ...car,
+                    location: e.target.value,
+                  })
+                }
+                className="w-full mt-2 px-4 py-3 bg-black border border-gray-700 rounded-xl outline-none focus:border-yellow-500 transition text-white disabled:opacity-50"
+              >
+                <option value="">Select City</option>
+                {car.state &&
+                  stateCityData[car.state].map((city) => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+              </select>
+            </div>
 
-      {car.state &&
-        stateCityData[car.state].map((city) => (
-          <option key={city} value={city}>
-            {city}
-          </option>
-        ))}
-    </select>
-  </div>
-
-</div>
+          </div>
 
           {/* Description */}
           <div>
@@ -216,7 +206,6 @@ const AddCar = () => {
             />
           </div>
 
-          {/* Button */}
           <button
             disabled={isLoading}
             className="px-10 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-2xl transition-all"
@@ -225,14 +214,12 @@ const AddCar = () => {
           </button>
 
         </motion.form>
-
       </div>
     </div>
   );
 };
 
-
-/* Input Component */
+/* Input */
 const Input = ({ label, value, onChange, type="text" }) => (
   <div>
     <label className="text-gray-400 text-sm">{label}</label>
@@ -246,7 +233,7 @@ const Input = ({ label, value, onChange, type="text" }) => (
   </div>
 );
 
-/* Select Component */
+/* Select */
 const Select = ({ label, value, options, onChange }) => (
   <div>
     <label className="text-gray-400 text-sm">{label}</label>
@@ -254,31 +241,16 @@ const Select = ({ label, value, options, onChange }) => (
       required
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full mt-2 px-4 py-3 
-      bg-black text-white
-      border border-gray-700 
-      rounded-xl 
-      outline-none 
-      focus:border-yellow-500 
-      transition
-      appearance-none"
+      className="w-full mt-2 px-4 py-3 bg-black text-white border border-gray-700 rounded-xl outline-none focus:border-yellow-500 transition appearance-none"
     >
-      <option value="" disabled>
-        Select {label}
-      </option>
-
+      <option value="" disabled>Select {label}</option>
       {options.map((opt) => (
-        <option
-          key={opt}
-          value={opt}
-          className="bg-black text-white"
-        >
+        <option key={opt} value={opt} className="bg-black text-white">
           {opt}
         </option>
       ))}
     </select>
   </div>
 );
-
 
 export default AddCar;
