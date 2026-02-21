@@ -148,7 +148,7 @@ const CarDetails = () => {
         >
 
           <p className="text-3xl font-bold text-yellow-500 flex justify-between">
-           {car.pricePerDay} RS
+           {currency}{car.pricePerDay} 
             <span className="text-base text-gray-400 font-normal">/day</span>
           </p>
 

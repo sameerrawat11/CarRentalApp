@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 console.log("Base URL:", import.meta.env.VITE_BASE_URL);
+
 // 🔥 Prevent cache issues
 axios.defaults.headers.common["Cache-Control"] = "no-cache";
-
 
 export const AppContext = createContext();
 
@@ -15,15 +15,23 @@ export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY;
 
-  const [token, setTokenState] = useState(
-    localStorage.getItem("token") || null
-  );
+  const [token, setTokenState] = useState(null);
   const [user, setUser] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [cars, setCars] = useState([]);
+
+  // ✅ 🔥 PHONE FIX — Restore Token On App Load
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      setTokenState(storedToken);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+    }
+  }, []);
 
   // ✅ Save Token Properly
   const setToken = (newToken) => {
@@ -62,17 +70,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // ✅ Logout
-  const logout = () => {
-    localStorage.removeItem("token");
-    setTokenState(null);
-    setUser(null);
-    setIsOwner(false);
-    delete axios.defaults.headers.common["Authorization"];
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
-
   // ✅ When Token Changes → Set Header + Fetch User
   useEffect(() => {
     if (token) {
@@ -85,6 +82,17 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     fetchCars();
   }, []);
+
+  // ✅ Logout
+  const logout = () => {
+    localStorage.removeItem("token");
+    setTokenState(null);
+    setUser(null);
+    setIsOwner(false);
+    delete axios.defaults.headers.common["Authorization"];
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
   const value = {
     navigate,
@@ -116,4 +124,3 @@ export const AppProvider = ({ children }) => {
 export const useAppContext = () => {
   return useContext(AppContext);
 };
-
