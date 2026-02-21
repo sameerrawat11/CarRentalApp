@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 const ManageCars = () => {
   const { isOwner, axios, currency } = useAppContext();
   const [cars, setCars] = useState([]);
+  const [loadingId, setLoadingId] = useState(null);
 
   const fetchOwnerCars = async () => {
     try {
@@ -22,20 +23,35 @@ const ManageCars = () => {
     }
   };
 
+  // 🔥 INSTANT TOGGLE (Optimistic Update)
   const toggleAvailability = async (carId) => {
     try {
+      setLoadingId(carId);
+
+      // Instant UI update
+      setCars((prev) =>
+        prev.map((car) =>
+          car._id === carId
+            ? { ...car, isAvaliable: !car.isAvaliable }
+            : car
+        )
+      );
+
       const { data } = await axios.post("/api/owner/toggle-car", { carId });
-      if (data.success) {
-        toast.success(data.message);
-        fetchOwnerCars();
-      } else {
+
+      if (!data.success) {
         toast.error(data.message);
+        fetchOwnerCars(); // rollback
       }
     } catch (error) {
       toast.error(error.message);
+      fetchOwnerCars(); // rollback on error
+    } finally {
+      setLoadingId(null);
     }
   };
 
+  // 🔥 INSTANT DELETE (No Delay)
   const deleteCar = async (carId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this car?"
@@ -43,20 +59,26 @@ const ManageCars = () => {
     if (!confirmDelete) return;
 
     try {
+      setLoadingId(carId);
+
       const { data } = await axios.post("/api/owner/delete-car", { carId });
+
       if (data.success) {
+        // 🔥 instantly remove from UI
+        setCars((prev) => prev.filter((car) => car._id !== carId));
         toast.success(data.message);
-        fetchOwnerCars();
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setLoadingId(null);
     }
   };
 
   useEffect(() => {
-    isOwner && fetchOwnerCars();
+    if (isOwner) fetchOwnerCars();
   }, [isOwner]);
 
   return (
@@ -78,7 +100,6 @@ const ManageCars = () => {
 
         <table className="w-full text-left text-sm">
 
-          {/* HEADER */}
           <thead className="bg-black border-b border-gray-800 text-gray-400">
             <tr>
               <th className="p-4 font-medium">Car</th>
@@ -89,14 +110,12 @@ const ManageCars = () => {
             </tr>
           </thead>
 
-          {/* BODY */}
           <tbody>
-            {cars.map((car, index) => (
+            {cars.map((car) => (
               <tr
-                key={index}
+                key={car._id}   // 🔥 FIXED (no index)
                 className="border-t border-gray-800 hover:bg-gray-900 transition"
               >
-                {/* Car Info */}
                 <td className="p-4 flex items-center gap-4">
                   <img
                     src={car.image}
@@ -113,17 +132,14 @@ const ManageCars = () => {
                   </div>
                 </td>
 
-                {/* Category */}
                 <td className="p-4 max-md:hidden text-gray-400">
                   {car.category}
                 </td>
 
-                {/* Price */}
                 <td className="p-4 font-semibold text-yellow-500">
                   {currency}{car.pricePerDay}/day
                 </td>
 
-                {/* Status */}
                 <td className="p-4 max-md:hidden">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -136,49 +152,43 @@ const ManageCars = () => {
                   </span>
                 </td>
 
-                {/* Actions */}
-                {/* Actions */}
-<td className="p-4">
-  <div className="flex items-center gap-6">
+                <td className="p-4">
+                  <div className="flex items-center gap-6">
 
-    {/* Toggle Availability */}
-    <button
-      onClick={() => toggleAvailability(car._id)}
-      className="w-10 h-10 flex items-center justify-center 
-                 rounded-full bg-gray-800 
-                 hover:bg-yellow-500/20 
-                 transition duration-300 group"
-    >
-      <img
-        src={car.isAvaliable ? assets.eye_close_icon : assets.eye_icon}
-        alt=""
-        className="w-5 h-5 
-                   filter invert 
-                   group-hover:invert-0 
-                   transition duration-300"
-      />
-    </button>
+                    {/* Toggle */}
+                    <button
+                      disabled={loadingId === car._id}
+                      onClick={() => toggleAvailability(car._id)}
+                      className="w-10 h-10 flex items-center justify-center 
+                                 rounded-full bg-gray-800 
+                                 hover:bg-yellow-500/20 
+                                 transition duration-300 group"
+                    >
+                      <img
+                        src={car.isAvaliable ? assets.eye_close_icon : assets.eye_icon}
+                        alt=""
+                        className="w-5 h-5 filter invert group-hover:invert-0 transition duration-300"
+                      />
+                    </button>
 
-    {/* Delete */}
-    <button
-      onClick={() => deleteCar(car._id)}
-      className="w-10 h-10 flex items-center justify-center 
-                 rounded-full bg-gray-800 
-                 hover:bg-red-500/20 
-                 transition duration-300 group"
-    >
-      <img
-        src={assets.delete_icon}
-        alt=""
-        className="w-5 h-5 
-                   filter invert 
-                   group-hover:invert-0 
-                   transition duration-300"
-      />
-    </button>
+                    {/* Delete */}
+                    <button
+                      disabled={loadingId === car._id}
+                      onClick={() => deleteCar(car._id)}
+                      className="w-10 h-10 flex items-center justify-center 
+                                 rounded-full bg-gray-800 
+                                 hover:bg-red-500/20 
+                                 transition duration-300 group"
+                    >
+                      <img
+                        src={assets.delete_icon}
+                        alt=""
+                        className="w-5 h-5 filter invert group-hover:invert-0 transition duration-300"
+                      />
+                    </button>
 
-  </div>
-</td>
+                  </div>
+                </td>
 
               </tr>
             ))}
