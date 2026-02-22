@@ -1,8 +1,12 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
+
+  const navigate = useNavigate();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 60 }}
@@ -13,6 +17,7 @@ const Banner = () => {
       border border-gray-800 px-8 md:px-14 py-16 
       flex flex-col md:flex-row items-center justify-between gap-10"
     >
+      
       {/* Left Content */}
       <div className="text-white max-w-xl">
         <h2 className="text-3xl md:text-4xl font-bold leading-snug">
@@ -32,6 +37,7 @@ const Banner = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/owner/add-car")}
           className="mt-6 px-8 py-3 bg-yellow-500 hover:bg-yellow-600 
           text-black font-semibold rounded-lg transition-all"
         >

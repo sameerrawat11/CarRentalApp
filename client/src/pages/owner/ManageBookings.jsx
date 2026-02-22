@@ -42,111 +42,89 @@ const ManageBookings = () => {
   }, []);
 
   return (
-    <div className="w-full px-6 md:px-10 py-10 text-white">
+    <div className="w-full px-4 md:px-8 py-8 text-white">
 
       <Title
         title="Manage Bookings"
         subTitle="Track customer bookings, approve or cancel requests."
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mt-10 rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black overflow-hidden shadow-xl"
-      >
+      <div className="mt-8 space-y-5">
 
-        <table className="w-full text-left text-sm">
+        {bookings.map((booking) => (
+          <motion.div
+            key={booking._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition"
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
 
-          {/* TABLE HEADER */}
-          <thead className="bg-black border-b border-gray-800 text-gray-400">
-            <tr>
-              <th className="p-4 font-medium">Car</th>
-              <th className="p-4 font-medium max-md:hidden">Date Range</th>
-              <th className="p-4 font-medium">Total</th>
-              <th className="p-4 font-medium max-md:hidden">Payment</th>
-              <th className="p-4 font-medium">Status</th>
-            </tr>
-          </thead>
+              {/* LEFT SIDE */}
+              <div className="flex items-center gap-4">
+                <img
+                  src={booking.car.image}
+                  alt=""
+                  className="h-16 w-16 rounded-lg object-cover"
+                />
 
-          {/* TABLE BODY */}
-          <tbody>
-            {bookings.map((booking, index) => (
-              <tr
-                key={index}
-                className="border-t border-gray-800 hover:bg-gray-900 transition"
-              >
-                {/* Car */}
-                <td className="p-4 flex items-center gap-4">
-                  <img
-                    src={booking.car.image}
-                    alt=""
-                    className="h-14 w-14 rounded-lg object-cover"
-                  />
-                  <div>
-                    <p className="font-medium text-white">
-                      {booking.car.brand} {booking.car.model}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {booking.car.category}
-                    </p>
-                  </div>
-                </td>
+                <div>
+                  <p className="font-semibold text-lg">
+                    {booking.car.brand} {booking.car.model}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {booking.car.category}
+                  </p>
 
-                {/* Date */}
-                <td className="p-4 text-gray-400 max-md:hidden">
-                  {booking.pickupDate.split("T")[0]} →{" "}
-                  {booking.returnDate.split("T")[0]}
-                </td>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {booking.pickupDate.split("T")[0]} →{" "}
+                    {booking.returnDate.split("T")[0]}
+                  </p>
+                </div>
+              </div>
 
-                {/* Price */}
-                <td className="p-4 font-semibold text-yellow-500">
+              {/* RIGHT SIDE */}
+              <div className="flex flex-col md:items-end gap-3">
+
+                <p className="text-yellow-400 font-bold text-lg">
                   {currency}{booking.price}
-                </td>
+                </p>
 
-                {/* Payment */}
-                <td className="p-4 max-md:hidden">
-                  <span className="px-3 py-1 rounded-full text-xs bg-gray-800 text-gray-300">
-                    Offline
+                {booking.status === "pending" ? (
+                  <select
+                    onChange={(e) =>
+                      changeBookingStatus(
+                        booking._id,
+                        e.target.value
+                      )
+                    }
+                    value={booking.status}
+                    className="bg-black border border-gray-700 text-white px-4 py-2 rounded-lg focus:border-yellow-500 outline-none text-sm"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="confirmed">Confirmed</option>
+                  </select>
+                ) : (
+                  <span
+                    className={`px-4 py-1 rounded-full text-xs font-semibold ${
+                      booking.status === "confirmed"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-red-500/20 text-red-400"
+                    }`}
+                  >
+                    {booking.status}
                   </span>
-                </td>
+                )}
 
-                {/* Status */}
-                <td className="p-4">
-                  {booking.status === "pending" ? (
-                    <select
-                      onChange={(e) =>
-                        changeBookingStatus(
-                          booking._id,
-                          e.target.value
-                        )
-                      }
-                      value={booking.status}
-                      className="bg-black border border-gray-700 text-white px-3 py-1.5 rounded-lg focus:border-yellow-500 outline-none"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="cancelled">Cancelled</option>
-                      <option value="confirmed">Confirmed</option>
-                    </select>
-                  ) : (
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        booking.status === "confirmed"
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
-                      }`}
-                    >
-                      {booking.status}
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+              </div>
 
-        </table>
+            </div>
+          </motion.div>
+        ))}
 
-      </motion.div>
+      </div>
     </div>
   );
 };
