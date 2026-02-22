@@ -19,11 +19,12 @@ const Navbar = () => {
       if (data.success) {
         setIsOwner(true);
         toast.success(data.message);
+        navigate("/owner");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || "Unauthorized");
     }
   };
 
@@ -49,40 +50,53 @@ const Navbar = () => {
         ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}
       >
         {menuLinks.map((link, index) => (
-  <Link
-    key={index}
-    to={link.path}
-    onClick={() => setOpen(false)}   // 🔥 CLOSE MENU
-    className="hover:text-yellow-500 transition duration-300"
-  >
-    {link.name}
-  </Link>
-))}
+          <Link
+            key={index}
+            to={link.path}
+            onClick={() => setOpen(false)}
+            className="hover:text-yellow-500 transition duration-300"
+          >
+            {link.name}
+          </Link>
+        ))}
 
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
+          
+          {/* 🔥 LIST CARS / DASHBOARD BUTTON FIXED */}
           <button
-             onClick={() => {
-    setOpen(false);
-    isOwner ? navigate("/owner") : changeRole();
-  }}
+            onClick={() => {
+              setOpen(false);
+
+              if (!user) {
+                setShowLogin(true); // open login modal
+                return;
+              }
+
+              if (isOwner) {
+                navigate("/owner");
+              } else {
+                changeRole();
+              }
+            }}
             className="hover:text-yellow-500 transition"
           >
             {isOwner ? "Dashboard" : "List Cars"}
           </button>
 
+          {/* LOGIN / LOGOUT BUTTON */}
           <button
-  onClick={() => {
-    if (user) {
-      logout();
-    } else {
-      setOpen(false);      // 🔥 CLOSE MOBILE MENU
-      setShowLogin(true);  // 🔥 OPEN LOGIN MODAL
-    }
-  }}
-  className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all"
->
-  {user ? "Logout" : "Login"}
-</button>
+            onClick={() => {
+              if (user) {
+                logout();
+              } else {
+                setOpen(false);
+                setShowLogin(true);
+              }
+            }}
+            className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all"
+          >
+            {user ? "Logout" : "Login"}
+          </button>
         </div>
       </div>
 
